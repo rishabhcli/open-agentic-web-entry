@@ -1,3 +1,2 @@
 # PROGRESS
-- [x] all code + 58 tests passing (validator, tools, runtime, agentify, ui(jsdom), worker-protocol)
-- [ ] browser smoke via serve (parent does), README, docs/DEMO_SCRIPT.md, docs/SUBMISSION.md, final run
+All milestones done (2026-11-12). 60 tests pass. Remaining work belongs to the parent: browser smoke test, GitHub repo, hosting (run tools/build.mjs --base), video, Devpost form. See docs/SUBMISSION.md checklist.
