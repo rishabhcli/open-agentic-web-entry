@@ -37,7 +37,7 @@ Agents that run in your browser, ask before calling other agent sites, and find 
 | Called by other agentic websites | `meeting_coordinator` listed in `agent-manifest.json` under `linking.exports`; other sites reference `<SITE BASE>meeting_coordinator` |
 | Validator page | `validator/index.html` |
 
-Site base: `<PUBLIC SITE URL>` (the folder that holds `agent-manifest.json`).
+Site base: `https://open-agentic-web-entry.vercel.app` (the folder that holds `agent-manifest.json`).
 
 ## What is original and what is reused
 
@@ -50,7 +50,7 @@ Site base: `<PUBLIC SITE URL>` (the folder that holds `agent-manifest.json`).
 Built with AI coding assistance (Claude Code) by Rishabh Bansal. The assistant wrote most of the code and tests; Rishabh directed the design and is responsible for the submission.
 
 ## Honest limitations
-- Verified by 60 automated tests and jsdom, not by a broad browser matrix. Real-browser behaviour (the Web Worker sandbox, layout, dialogs, the CSP) was not exercised by the author of the code; `<DID YOU SMOKE TEST? state browser and date>`.
+- Verified by 60 automated tests and jsdom, not by a broad browser matrix. Real-browser behaviour (the Web Worker sandbox, layout, dialogs, the CSP) was not exercised by the author of the code; `on Nov 13 2026 the live site was exercised in a Chromium-based browser: the first example ran with both consent cards approved, the agent graph turned green, the Self-test tab passed 13 of 13 checks, and the validator CLI reported CONFORMS with 0 errors and 0 warnings against the public URL. Safari and Firefox were not tested.`.
 - The optional key panel has been tested only against fake endpoints, not a live provider. Some providers block browser CORS.
 - Holidays: US federal and England and Wales only. Weekends are Saturday and Sunday for everyone. The city list is a sample.
 - MCP and cross-site action transport are not implemented. The demo peer sites share the site's origin, so cross-origin CORS behaviour of peers was not exercised against a real second origin.
@@ -65,10 +65,10 @@ Not used: the Otari email and "problem faced" fields do not apply. (The key pane
 
 ## Checklist for the parent agent (things only a human or the browser can provide)
 
-1. Create the public GitHub repo, push this folder (MIT licence is included). Repo URL: `<REPO URL>`
+1. Create the public GitHub repo, push this folder (MIT licence is included). Repo URL: `https://github.com/rishabhcli/open-agentic-web-entry`
 2. Publish `site/` on a static host (for example GitHub Pages serving the `site/` folder or a `gh-pages` branch).
-3. Before publishing run `node tools/build.mjs --base <PUBLIC SITE URL>/` (trailing slash), commit the rewritten JSON, then publish.
-4. After publishing run `node tools/validate.mjs <PUBLIC SITE URL>/agent-manifest.json`. It must print `CONFORMS` with zero errors and no NO_CORS warning.
+3. Before publishing run `node tools/build.mjs --base https://open-agentic-web-entry.vercel.app/` (trailing slash), commit the rewritten JSON, then publish.
+4. After publishing run `node tools/validate.mjs https://open-agentic-web-entry.vercel.app/agent-manifest.json`. It must print `CONFORMS` with zero errors and no NO_CORS warning.
 5. Open the live site in a normal browser: submit the first example, approve both consent cards, check the graph turns green, run the Self-test tab (13 PASS), open `validator/`.
 6. Record the video (see `docs/DEMO_SCRIPT.md`): Rishabh speaking in his own voice, under 2:00, uploaded as a public YouTube video. Video URL: `<YOUTUBE URL>`
 7. Screenshots (at least two; suggested four): the results with ranked slots; the Agent graph tab after a run; the Messages tab; the validator page showing a broken example.
