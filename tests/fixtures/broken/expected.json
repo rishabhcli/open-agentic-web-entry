@@ -1,0 +1,57 @@
+{
+  "manifest-missing-front-man.json": [
+    "NETWORK_NO_FRONT_MAN"
+  ],
+  "manifest-no-networks.json": [
+    "NO_NETWORKS"
+  ],
+  "manifest-http-hocon.json": [
+    "HTTPS_REQUIRED"
+  ],
+  "manifest-local-path.json": [
+    "HOCON_LOCAL_PATH"
+  ],
+  "manifest-duplicate-network.json": [
+    "DUPLICATE_NETWORK"
+  ],
+  "manifest-bad-sri.json": [
+    "CODED_TOOLS_SRI"
+  ],
+  "manifest-secret-in-router.json": [
+    "SECRET_IN_DOCUMENT"
+  ],
+  "network-duplicate-agents.json": [
+    "DUPLICATE_AGENT"
+  ],
+  "network-unknown-reference.json": [
+    "UNKNOWN_AGENT_REFERENCE"
+  ],
+  "network-no-function-description.json": [
+    "AGENT_NO_FUNCTION_DESCRIPTION"
+  ],
+  "network-no-agents.json": [
+    "NO_AGENTS"
+  ],
+  "network-secret.json": [
+    "SECRET_IN_DOCUMENT"
+  ],
+  "network-unresolved-substitution.json": [
+    "UNRESOLVED_SUBSTITUTION"
+  ],
+  "network-bad-schema.json": [
+    "SCHEMA_PROPERTIES"
+  ],
+  "network-http-peer.json": [
+    "HTTPS_REQUIRED"
+  ],
+  "network-peer-no-name.json": [
+    "PEER_URL_NO_NETWORK"
+  ],
+  "links-bad.json": [
+    "LINKS_VERSION",
+    "LINKS_BAD_URL"
+  ],
+  "not-json.json": [
+    "INVALID_JSON"
+  ]
+}

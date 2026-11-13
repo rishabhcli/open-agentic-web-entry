@@ -1,0 +1,75 @@
+{
+  "brand": "Marrow Point Harbor Tours Assistant",
+  "networks": [
+    {
+      "name": "marrow_point_harbor_tours",
+      "front_man": "harbor_tours_assistant",
+      "hocon": "./marrow_point_harbor_tours.network.json",
+      "description": "A test site for the linking checks: boat trips from Marrow Point harbor. For rooms, the assistant asks Tidewhistle Guesthouse's assistant, after you agree.",
+      "tags": [
+        "agentified-website"
+      ],
+      "sample_queries": [
+        "Is there a seal-watching trip for two on a Saturday morning in June?",
+        "Can you ask Tidewhistle Guesthouse whether a room is free for two from 12 to 14 June?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.openai.com/v1",
+    "mock": false,
+    "byok_router": "https://api.openai.com/v1"
+  },
+  "allowed_peers": [
+    "http://127.0.0.1:8080"
+  ],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Calls only the partner sites in allowed_peers, after the visitor agrees."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "marrow_point_harbor_tours",
+    "front_man": "harbor_tours_assistant",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#0f5c6e"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "marrow_point_harbor_tours",
+        "front_man": "harbor_tours_assistant",
+        "aliases": [
+          "marrow_point_harbor_tours",
+          "harbor_tours_assistant"
+        ],
+        "url": "marrow_point_harbor_tours"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_tour_state"
+    ]
+  }
+}

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob:; worker-src 'self' blob:; style-src 'self'; img-src 'self' data:; connect-src 'self' https: http://localhost:* http://127.0.0.1:*; base-uri 'none'; form-action 'none'; object-src 'none'">
+<title>Meeting Finder: an open agentic website</title>
+<meta name="description" content="Find meeting times across time zones and public holidays with agents that run in your browser and call other agent sites.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#ask">Skip to the request form</a>
+<header class="top">
+  <div>
+    <h1>Meeting Finder</h1>
+    <p class="tag">An open agentic website. Agents run in this browser and call two other agent sites.</p>
+  </div>
+  <nav aria-label="Published files" class="files">
+    <a href="agent-manifest.json">agent-manifest.json</a>
+    <a href="meeting_coordinator.network.json">network.json</a>
+    <a href="runtime/index.js">runtime</a>
+    <a href="validator/index.html">validator</a>
+  </nav>
+</header>
+
+<main class="grid">
+  <section class="card" aria-labelledby="ask-h" id="ask">
+    <h2 id="ask-h">Ask</h2>
+    <form id="ask-form" novalidate>
+      <label for="request">Describe the meeting in plain English</label>
+      <textarea id="request" rows="3" spellcheck="false" placeholder="30 min with Ana in London, Ravi in Bengaluru and me in Chicago next week"></textarea>
+      <div class="chips" role="group" aria-label="Examples">
+        <button type="button" class="chip" data-example="30 min with Ana in London, Ravi in Bengaluru and me in Chicago between Nov 16 and Nov 20">London, Bengaluru, Chicago</button>
+        <button type="button" class="chip" data-example="1 hour with Sam in Sydney and me in San Francisco between Nov 23 and Nov 27, hours 8-18">Sydney and San Francisco</button>
+        <button type="button" class="chip" data-example="45 min with Priya in New York, Tom in London and Dana in Dublin between 2026-12-21 and 2026-12-31">Holidays in December</button>
+      </div>
+      <div class="row">
+        <button type="submit" id="go" class="primary">Find times</button>
+        <span id="status" role="status" aria-live="polite" class="muted"></span>
+      </div>
+    </form>
+    <div id="result" aria-live="polite"></div>
+    <p class="muted small">Sample data: the city list is a small bundled sample. Holidays are computed for the US (federal) and England/Wales only. Weekends are Saturday and Sunday for everyone.</p>
+  </section>
+
+  <section class="card" aria-labelledby="how-h">
+    <h2 id="how-h">How this works</h2>
+    <div role="tablist" aria-label="Details" class="tabs" id="tabs">
+      <button role="tab" id="t-graph" aria-controls="p-graph" aria-selected="true">Agent graph</button>
+      <button role="tab" id="t-msgs" aria-controls="p-msgs" aria-selected="false" tabindex="-1">Messages</button>
+      <button role="tab" id="t-peers" aria-controls="p-peers" aria-selected="false" tabindex="-1">Peers and privacy</button>
+      <button role="tab" id="t-model" aria-controls="p-model" aria-selected="false" tabindex="-1">AI model</button>
+      <button role="tab" id="t-test" aria-controls="p-test" aria-selected="false" tabindex="-1">Self-test</button>
+    </div>
+
+    <div role="tabpanel" id="p-graph" aria-labelledby="t-graph" tabindex="0">
+      <p class="muted small">Boxes light up as agents are called. The dashed boxes are other sites whose networks run in this browser after you approve them.</p>
+      <svg id="graph" viewBox="0 0 600 330" role="img" aria-label="Agent graph: visitor, meeting_coordinator, request_parser, slot_ranker, timezone_desk with zone_resolver, holiday_desk with holiday_calendar, and the page"></svg>
+      <ol id="graph-log" class="sr-only"></ol>
+    </div>
+
+    <div role="tabpanel" id="p-msgs" aria-labelledby="t-msgs" tabindex="0" hidden>
+      <div class="row"><p class="muted small grow">Every call between agents, tools, peers and the page, in order. Keys are never shown here.</p><button type="button" id="clear-log" class="chip">Clear</button></div>
+      <ol id="log" class="log" aria-label="Messages exchanged"></ol>
+      <p id="log-empty" class="muted">Nothing yet. Run a request.</p>
+    </div>
+
+    <div role="tabpanel" id="p-peers" aria-labelledby="t-peers" tabindex="0" hidden>
+      <h3>Peer sites this site may call</h3>
+      <ul id="peer-list" class="plain"></ul>
+      <label class="check"><input type="checkbox" id="ask-same" checked> Ask before contacting a peer, even on this same origin</label>
+      <div class="row"><button type="button" id="forget" class="chip">Forget session approvals</button></div>
+      <h3>Private context (sly_data)</h3>
+      <label for="sly">Private note kept in this browser. The network allows no fields to leave, so peers see none.</label>
+      <input id="sly" type="text" value="organizer prefers mornings (private)" autocomplete="off">
+      <h3>Try the safety checks by hand</h3>
+      <div class="row wrap">
+        <button type="button" class="chip" id="try-evil">Call a site that is not allowed</button>
+        <button type="button" class="chip" id="try-missing">Ask for a network that does not exist</button>
+      </div>
+      <p id="try-out" class="muted" role="status"></p>
+    </div>
+
+    <div role="tabpanel" id="p-model" aria-labelledby="t-model" tabindex="0" hidden>
+      <form id="model-form" novalidate>
+        <fieldset>
+          <legend>Inference</legend>
+          <label class="check"><input type="radio" name="router" value="local" checked> Built-in deterministic router (default, no key, nothing leaves your browser except peer files)</label>
+          <label class="check"><input type="radio" name="router" value="openai"> Bring your own key: OpenAI-compatible endpoint (the front agent then uses an LLM)</label>
+        </fieldset>
+        <div id="byok-fields" hidden>
+          <label for="base">Base URL</label>
+          <input id="base" type="url" value="https://api.openai.com/v1" autocomplete="off">
+          <label for="model">Model</label>
+          <input id="model" type="text" placeholder="model name your endpoint serves" autocomplete="off">
+          <label for="key">API key</label>
+          <input id="key" type="password" autocomplete="off" spellcheck="false">
+          <label class="check"><input type="checkbox" id="remember"> Remember on this device (stored in this browser's localStorage, unencrypted)</label>
+          <div class="row wrap">
+            <button type="button" class="chip" id="preset-ollama">Preset: local Ollama</button>
+            <button type="button" class="chip" id="delete-key">Delete saved key</button>
+          </div>
+          <p class="muted small">The key stays in this page. It is sent only to the Base URL above, never to peer sites, never in a prompt, trace or manifest. Any other script on this origin could read it, so use a restricted key. Some providers block direct browser calls (CORS).</p>
+        </div>
+        <div class="row"><button type="submit" class="primary">Apply</button><span id="model-status" role="status" class="muted"></span></div>
+      </form>
+    </div>
+
+    <div role="tabpanel" id="p-test" aria-labelledby="t-test" tabindex="0" hidden>
+      <p class="muted small">Runs this runtime against in-memory fake sites and checks the behaviours in section 6 of the specification. No real network requests.</p>
+      <div class="row"><button type="button" id="run-test" class="primary">Run checks</button><span id="test-status" role="status" class="muted"></span></div>
+      <table id="test-table" class="tbl" hidden><thead><tr><th>Result</th><th>Check</th><th>Detail</th></tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Built with AI coding assistance (Claude Code) by Rishabh Bansal. MIT licensed. See the README for what was and was not tested.</p>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlg-title">
+  <form method="dialog" id="dlg-form">
+    <h2 id="dlg-title">Permission</h2>
+    <p id="dlg-body"></p>
+    <pre id="dlg-detail" class="detail"></pre>
+    <div class="row wrap" id="dlg-buttons"></div>
+  </form>
+</dialog>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

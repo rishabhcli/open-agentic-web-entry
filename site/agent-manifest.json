@@ -1,0 +1,87 @@
+{
+  "brand": "Meeting Finder",
+  "networks": [
+    {
+      "name": "meeting_coordinator",
+      "front_man": "meeting_coordinator",
+      "hocon": "./meeting_coordinator.network.json",
+      "description": "Finds meeting times that work for people in different cities: reads the request, asks a time-zone desk and a public-holiday desk on two other agent sites, then ranks slots.",
+      "tags": [
+        "agentified-website"
+      ],
+      "sample_queries": [
+        "30 min with Ana in London, Ravi in Bengaluru and me in Chicago next week",
+        "1 hour with Sam in Sydney and me in San Francisco between Nov 16 and Nov 20, hours 8-18"
+      ]
+    }
+  ],
+  "llm_router": {
+    "kind": "local-deterministic",
+    "mock": true,
+    "base_url": "https://api.openai.com/v1",
+    "byok_router": "https://api.openai.com/v1",
+    "note": "Default inference is a deterministic local router: no key or model needed. Visitors may bring their own OpenAI-compatible key."
+  },
+  "allowed_peers": [
+    "http://127.0.0.1:8080/sites/timezones/",
+    "http://127.0.0.1:8080/sites/holidays/"
+  ],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Calls only the two listed peer sites, after the visitor agrees."
+  },
+  "coded_tools": {
+    "module": "./coded-tools.js",
+    "sri": "sha256-xKKd3N+DodlxCyBfs87XnmGPPrLGMvt7PUtyJEhaWas="
+  },
+  "theme": {
+    "primary": "#0b5fff"
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "direct_byok": true,
+    "public_mcp_facade": false
+  },
+  "runtime": {
+    "module": "./runtime/index.js",
+    "profile": "open-agentic-web-mvp-0.2"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "meeting_coordinator",
+        "front_man": "meeting_coordinator",
+        "aliases": [
+          "meeting_coordinator"
+        ],
+        "url": "meeting_coordinator"
+      }
+    ],
+    "imports": [
+      {
+        "network": "timezone_desk",
+        "url": "http://127.0.0.1:8080/sites/timezones/timezone_desk"
+      },
+      {
+        "network": "holiday_desk",
+        "url": "http://127.0.0.1:8080/sites/holidays/holiday_desk"
+      }
+    ],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "actions": {
+    "version": 1,
+    "module": "./actions.js",
+    "agentTools": [
+      "website_get_page_state",
+      "website_show_result",
+      "website_export_ics"
+    ]
+  },
+  "validator": "./validator/index.html"
+}

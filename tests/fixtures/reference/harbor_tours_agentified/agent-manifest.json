@@ -1,0 +1,86 @@
+{
+  "brand": "Marrow Point Harbor Tours Assistant",
+  "networks": [
+    {
+      "name": "marrow_point_harbor_tours",
+      "front_man": "harbor_tours_assistant",
+      "hocon": "./marrow_point_harbor_tours.network.json",
+      "description": "Ask about our boat trips and sea wall walk, find times and prices, fill your basket, and reserve or cancel trips.",
+      "tags": [
+        "agentified-website"
+      ],
+      "sample_queries": [
+        "Which trips welcome dogs, and which have step-free boarding?",
+        "What could 2 adults and a 3-year-old do next Saturday, and what would it cost?",
+        "Put the 2 pm Seal Rocks Cruise two weeks from today in my basket for 2 adults and 1 child.",
+        "Cancel reservation HT-3MVK under the last name Thorne.",
+        "Where can we stay nearby?",
+        "Can I buy a gift voucher or book a fishing trip with you?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.otari.ai/api/v1",
+    "mock": false,
+    "byok_router": "https://api.otari.ai/api/v1"
+  },
+  "allowed_peers": [
+    "http://127.0.0.1:8080"
+  ],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Calls only the partner sites in allowed_peers, after the visitor agrees, plus page-local actions."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "marrow_point_harbor_tours",
+    "front_man": "harbor_tours_assistant",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#1f3c68"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "marrow_point_harbor_tours",
+        "front_man": "harbor_tours_assistant",
+        "aliases": [
+          "marrow_point_harbor_tours",
+          "harbor_tours_assistant"
+        ],
+        "url": "marrow_point_harbor_tours"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_tours_state",
+      "get_good_to_know",
+      "find_departures",
+      "add_trip_to_basket",
+      "remove_trip_from_basket",
+      "reserve_basket",
+      "look_up_reservation",
+      "cancel_reservation"
+    ]
+  }
+}

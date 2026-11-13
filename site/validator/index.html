@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https: http://localhost:* http://127.0.0.1:*; base-uri 'none'; form-action 'none'; object-src 'none'">
+<title>Agentic web conformance validator</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<header class="top"><div><h1>Conformance validator</h1><p class="tag">Checks an agent-manifest.json, a network definition or links.json against the Open Agentic Web MVP profile 0.2.</p></div><nav class="files"><a href="../index.html">Meeting Finder</a></nav></header>
+<main class="grid" style="grid-template-columns:minmax(0,1fr)">
+<section class="card" aria-labelledby="in-h">
+  <h2 id="in-h">Check a published site</h2>
+  <form id="url-form" novalidate>
+    <label for="url">Site base or agent-manifest.json URL</label>
+    <input id="url" type="url" placeholder="https://example.com/agent-manifest.json">
+    <p class="muted small">The browser must be allowed to fetch the files (CORS), which the profile requires for public artifacts. If this fails, use paste or file below, or run <code>node tools/validate.mjs &lt;url&gt;</code>.</p>
+    <div class="row"><button class="primary" type="submit">Validate URL</button><button type="button" id="own" class="chip">Validate this site</button></div>
+  </form>
+  <h2 style="margin-top:1.2rem">Or check a single document</h2>
+  <label for="file">JSON file</label><input id="file" type="file" accept=".json,application/json">
+  <label for="paste">Or paste JSON</label>
+  <textarea id="paste" rows="8" spellcheck="false" placeholder='{"networks":[...]} or {"tools":[...]}'></textarea>
+  <div class="row"><button type="button" id="check" class="primary">Validate pasted JSON</button><button type="button" id="broken" class="chip">Load a broken example</button></div>
+</section>
+<section class="card" aria-labelledby="out-h"><h2 id="out-h">Report</h2><div id="summary" role="status" aria-live="polite" class="muted">Nothing checked yet.</div><div id="report"></div></section>
+</main>
+<script type="module" src="validator.js"></script>
+</body>
+</html>

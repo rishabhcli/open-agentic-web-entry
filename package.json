@@ -1,0 +1,18 @@
+{
+  "name": "open-agentic-web-entry",
+  "version": "0.1.0",
+  "description": "Meeting Finder: an open agentic website (MVP profile 0.2) plus agentify.js and a conformance validator.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Rishabh Bansal",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "serve": "node tools/serve.mjs 8080",
+    "sync": "node tools/sync.mjs",
+    "build": "node tools/build.mjs",
+    "validate": "node tools/validate.mjs site/agent-manifest.json"
+  },
+  "devDependencies": {
+    "jsdom": "^31.0.0"
+  }
+}

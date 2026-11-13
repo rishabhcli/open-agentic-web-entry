@@ -1,0 +1,1 @@
+Files in this folder are unmodified copies of sample files from https://github.com/cognizant-ai-labs/agentic-web (Apache License 2.0), used only as validator test inputs.

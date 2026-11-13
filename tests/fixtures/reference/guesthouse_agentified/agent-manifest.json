@@ -1,0 +1,86 @@
+{
+  "brand": "Tidewhistle Guesthouse Assistant",
+  "networks": [
+    {
+      "name": "tidewhistle_guesthouse",
+      "front_man": "tidewhistle_assistant",
+      "hocon": "./tidewhistle_guesthouse.network.json",
+      "description": "Ask about rooms, prices and house policies, check availability, and book or cancel a stay.",
+      "tags": [
+        "agentified-website"
+      ],
+      "sample_queries": [
+        "Which room is step-free, and can I bring my dog?",
+        "Is any room free for two guests for three nights starting three weeks from today? What would each cost?",
+        "Put the Lantern Room in the booking form for three guests for two nights starting two weeks from today, with breakfast.",
+        "Book the Garden Room for me and my dog for two nights starting three weeks from today. I'm Ana Silva, ana.silva@example.com, arriving 5 pm to 7 pm.",
+        "How much would it cost to cancel booking TW-7KQ2 under the last name Pell today?",
+        "Can you book a seal-watching boat trip and an airport pickup for us?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.otari.ai/api/v1",
+    "mock": false,
+    "byok_router": "https://api.otari.ai/api/v1"
+  },
+  "allowed_peers": [
+    "http://localhost:8081"
+  ],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Calls only the partner sites in allowed_peers, after the visitor agrees."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "tidewhistle_guesthouse",
+    "front_man": "tidewhistle_assistant",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#1b5e73"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "tidewhistle_guesthouse",
+        "front_man": "tidewhistle_assistant",
+        "aliases": [
+          "tidewhistle_guesthouse",
+          "tidewhistle_assistant"
+        ],
+        "url": "tidewhistle_guesthouse"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_guesthouse_state",
+      "get_house_policies",
+      "search_rooms",
+      "quote_stay",
+      "fill_booking_form",
+      "look_up_booking",
+      "place_booking",
+      "cancel_booking"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "networks": [
+    {
+      "name": "n",
+      "front_man": "f",
+      "hocon": "./n.json"
+    }
+  ],
+  "llm_router": {
+    "kind": "x",
+    "mock": true
+  },
+  "peer_policy": {
+    "mode": "closed"
+  },
+  "coded_tools": {
+    "module": "./t.js",
+    "sri": "md5-abc"
+  }
+}

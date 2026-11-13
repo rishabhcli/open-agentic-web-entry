@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "description": "x"
+  },
+  "tools": [
+    {
+      "name": "x",
+      "function": {
+        "description": "x agent"
+      },
+      "instructions": "do it",
+      "tools": []
+    },
+    {
+      "name": "x",
+      "function": {
+        "description": "x agent"
+      },
+      "instructions": "do it",
+      "tools": []
+    }
+  ]
+}

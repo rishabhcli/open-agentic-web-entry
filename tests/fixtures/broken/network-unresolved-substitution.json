@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "description": "x"
+  },
+  "tools": [
+    {
+      "name": "front",
+      "function": {
+        "description": "front agent"
+      },
+      "instructions": "Model is ${MODEL_NAME}",
+      "tools": []
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "networks": [
+    {
+      "name": "n",
+      "front_man": "f",
+      "hocon": "http://example.com/n.json"
+    }
+  ],
+  "llm_router": {
+    "kind": "x",
+    "mock": true
+  },
+  "peer_policy": {
+    "mode": "closed"
+  }
+}

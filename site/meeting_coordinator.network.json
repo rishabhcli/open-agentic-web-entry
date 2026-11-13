@@ -1,0 +1,201 @@
+{
+  "metadata": {
+    "description": "Finds meeting times that work for people in different cities: reads the request, asks a time-zone desk and a public-holiday desk on two other agent sites, then ranks slots.",
+    "sample_queries": [
+      "30 min with Ana in London, Ravi in Bengaluru and me in Chicago next week",
+      "1 hour with Sam in Sydney and me in San Francisco between Nov 16 and Nov 20, hours 8-18"
+    ],
+    "limits": {
+      "maxDepth": 5,
+      "maxAgentCalls": 24,
+      "maxRemoteCalls": 4,
+      "maxMs": 60000
+    },
+    "sly_data_allow": {
+      "downstream": [],
+      "upstream": []
+    },
+    "sample_data_notice": "The city list is a small bundled sample. Holidays are computed from rules for US federal and England/Wales only."
+  },
+  "link_labels": {
+    "http://127.0.0.1:8080/sites/timezones/timezone_desk": "Time Zone Desk",
+    "http://127.0.0.1:8080/sites/holidays/holiday_desk": "Holiday Desk"
+  },
+  "tools": [
+    {
+      "name": "meeting_coordinator",
+      "function": {
+        "description": "Find meeting slots that work for everyone, given a plain-English request.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "request": {
+              "type": "string",
+              "description": "e.g. \"30 min with Ana in London and me in Chicago next week\""
+            },
+            "today": {
+              "type": "string",
+              "description": "YYYY-MM-DD, filled in by the runtime when missing"
+            }
+          },
+          "required": [
+            "request"
+          ]
+        }
+      },
+      "instructions": "You coordinate meeting-time requests. Use only tool results for facts; never invent times, holidays or time zones.\nFollow this order: (1) request_parser with {text: the request, today}. If its result has ok=false, explain the problems and stop.\n(2) timezone_desk with {cities: parsed.cities, on: parsed.from}. (3) holiday_desk with {countries: zones.countries, from: parsed.from, to: parsed.to}.\n(4) slot_ranker with {} or {overrides:{duration_minutes, hours:{start,end}}} only if the visitor asked to change them.\n(5) website_show_result with {from: \"slot_ranker\"} so the page shows the slots, then reply with the best slot, how each person experiences it, and any assumptions or skipped holidays.\ntimezone_desk and holiday_desk run other sites' published networks in this browser after the visitor approves. If the visitor declines or one fails, say so plainly and do not guess.\nOffer website_export_ics only if the visitor asks for a calendar file; it needs their confirmation.",
+      "tools": [
+        "request_parser",
+        "http://127.0.0.1:8080/sites/timezones/timezone_desk",
+        "http://127.0.0.1:8080/sites/holidays/holiday_desk",
+        "slot_ranker",
+        "website_show_result",
+        "website_get_page_state",
+        "website_export_ics"
+      ],
+      "plan": {
+        "steps": [
+          {
+            "call": "request_parser",
+            "args": {
+              "text": "$input.request",
+              "today": "$input.today"
+            },
+            "as": "parsed"
+          },
+          {
+            "call": "timezone_desk",
+            "args": {
+              "cities": "$parsed.cities",
+              "on": "$parsed.from"
+            },
+            "as": "zones"
+          },
+          {
+            "call": "holiday_desk",
+            "args": {
+              "countries": "$zones.countries",
+              "from": "$parsed.from",
+              "to": "$parsed.to"
+            },
+            "as": "hol"
+          },
+          {
+            "call": "slot_ranker",
+            "args": {},
+            "as": "ranked"
+          },
+          {
+            "call": "website_show_result",
+            "args": {
+              "from": "slot_ranker"
+            },
+            "as": "shown"
+          }
+        ],
+        "return": {
+          "summary": "$ranked.summary",
+          "slots": "$ranked.slots",
+          "ok": "$ranked.ok"
+        }
+      }
+    },
+    {
+      "name": "request_parser",
+      "execution": "deterministic",
+      "function": {
+        "description": "Read a plain-English meeting request into people, cities, duration, dates and working hours.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "today": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text",
+            "today"
+          ]
+        }
+      },
+      "instructions": "Call tool_parse_request with the text and today. Return its result unchanged.",
+      "tools": [
+        "tool_parse_request"
+      ],
+      "plan": {
+        "steps": [
+          {
+            "call": "tool_parse_request",
+            "args": {
+              "text": "$input.text",
+              "today": "$input.today"
+            },
+            "as": "r"
+          }
+        ],
+        "return": "$r"
+      }
+    },
+    {
+      "name": "slot_ranker",
+      "execution": "deterministic",
+      "function": {
+        "description": "Rank candidate meeting slots using the parsed request, resolved zones and holidays gathered earlier in this run.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "overrides": {
+              "type": "object",
+              "properties": {
+                "duration_minutes": {
+                  "type": "integer",
+                  "minimum": 15,
+                  "maximum": 240
+                },
+                "hours": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "number"
+                    },
+                    "end": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "top": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10
+                }
+              }
+            }
+          },
+          "required": []
+        }
+      },
+      "instructions": "Call tool_rank_slots. The runtime supplies parsed, zones and holidays from this run. Return its result unchanged.",
+      "tools": [
+        "tool_rank_slots"
+      ],
+      "plan": {
+        "steps": [
+          {
+            "call": "tool_rank_slots",
+            "args": {
+              "parsed": "$ctx.request_parser",
+              "zones": "$ctx.timezone_desk",
+              "holidays": "$ctx.holiday_desk",
+              "overrides": "$input.overrides"
+            },
+            "as": "r"
+          }
+        ],
+        "return": "$r"
+      }
+    }
+  ]
+}

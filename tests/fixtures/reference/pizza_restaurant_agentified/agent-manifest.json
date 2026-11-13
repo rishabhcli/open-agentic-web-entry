@@ -1,0 +1,78 @@
+{
+  "brand": "Little Oven Pizza Assistant",
+  "networks": [
+    {
+      "name": "pizza_restaurant_website_assistant",
+      "front_man": "front_desk_coordinator",
+      "hocon": "./pizza_restaurant_website_assistant.network.json",
+      "description": "Ask about our menu, build your cart, or place a demo pickup or delivery order.",
+      "tags": [
+        "deployed",
+        "nsdeploy"
+      ],
+      "sample_queries": [
+        "What are the vegetarian options?",
+        "I am lactose intolerant. Which pizza is made without dairy?",
+        "Add 10 Margherita pizzas to my cart, then help me arrange delivery at 18:00.",
+        "What is the status of my latest demo order?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.otari.ai/api/v1",
+    "mock": false,
+    "byok_router": "https://api.otari.ai/api/v1"
+  },
+  "allowed_peers": [],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "This example uses local specialists and page-local actions."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "pizza_restaurant_website_assistant",
+    "front_man": "front_desk_coordinator",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#a63220"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "pizza_restaurant_website_assistant",
+        "front_man": "front_desk_coordinator",
+        "aliases": [
+          "pizza_restaurant_website_assistant",
+          "front_desk_coordinator"
+        ],
+        "url": "pizza_restaurant_website_assistant"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./restaurant-actions.js",
+    "agentTools": [
+      "get_restaurant_state",
+      "add_to_cart",
+      "set_cart",
+      "checkout_demo_order"
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "brand": "Time Zone Desk",
+  "networks": [
+    {
+      "name": "timezone_desk",
+      "front_man": "timezone_desk",
+      "hocon": "./timezone_desk.network.json",
+      "description": "Resolve city names to IANA time zones, countries and UTC offsets.",
+      "tags": [
+        "agentified-website"
+      ],
+      "sample_queries": [
+        "Resolve Bengaluru, London and Chicago"
+      ]
+    }
+  ],
+  "llm_router": {
+    "kind": "local-deterministic",
+    "mock": true,
+    "base_url": "https://api.openai.com/v1",
+    "byok_router": "https://api.openai.com/v1",
+    "note": "Default inference is a deterministic local router: no key or model needed. Visitors may bring their own OpenAI-compatible key."
+  },
+  "allowed_peers": [],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "This site calls no other sites."
+  },
+  "coded_tools": {
+    "module": "./coded-tools.js",
+    "sri": "sha256-8Y1q7T5O0qf17D+cfuW9sL/ooJz6ZxXIOMDktaplFXw="
+  },
+  "theme": {
+    "primary": "#0b5fff"
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "direct_byok": true,
+    "public_mcp_facade": false
+  }
+}

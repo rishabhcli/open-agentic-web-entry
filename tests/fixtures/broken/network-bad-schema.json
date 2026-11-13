@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "description": "x"
+  },
+  "tools": [
+    {
+      "name": "front",
+      "function": {
+        "description": "d",
+        "parameters": {
+          "type": "object",
+          "properties": []
+        }
+      },
+      "instructions": "do it",
+      "tools": []
+    }
+  ]
+}

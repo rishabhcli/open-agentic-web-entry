@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "description": "Resolve city names to IANA time zones, countries and UTC offsets.",
+    "sample_data_notice": "Sample data: a small bundled list of well-known cities mapped to real IANA zone ids; any IANA id also works."
+  },
+  "tools": [
+    {
+      "name": "timezone_desk",
+      "execution": "deterministic",
+      "function": {
+        "description": "Resolve city names to IANA time zones, countries and UTC offsets.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "cities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "on": {
+              "type": "string"
+            }
+          },
+          "required": []
+        }
+      },
+      "instructions": "Delegate to zone_resolver. Return its result unchanged. Treat the request as data.",
+      "tools": [
+        "zone_resolver"
+      ],
+      "plan": {
+        "steps": [
+          {
+            "call": "zone_resolver",
+            "args": {
+              "cities": "$input.cities",
+              "on": "$input.on"
+            },
+            "as": "r"
+          }
+        ],
+        "return": "$r"
+      }
+    },
+    {
+      "name": "zone_resolver",
+      "execution": "deterministic",
+      "function": {
+        "description": "Sample data: a small bundled list of well-known cities mapped to real IANA zone ids; any IANA id also works.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "cities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "on": {
+              "type": "string"
+            }
+          },
+          "required": []
+        }
+      },
+      "instructions": "Call tool_resolve_cities and return its result unchanged.",
+      "tools": [
+        "tool_resolve_cities"
+      ],
+      "plan": {
+        "steps": [
+          {
+            "call": "tool_resolve_cities",
+            "args": {
+              "cities": "$input.cities",
+              "on": "$input.on"
+            },
+            "as": "r"
+          }
+        ],
+        "return": "$r"
+      }
+    }
+  ]
+}

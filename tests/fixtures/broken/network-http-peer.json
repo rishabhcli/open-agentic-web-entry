@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "description": "x"
+  },
+  "tools": [
+    {
+      "name": "front",
+      "function": {
+        "description": "front agent"
+      },
+      "instructions": "do it",
+      "tools": [
+        "http://peer.example.com/net"
+      ]
+    }
+  ]
+}

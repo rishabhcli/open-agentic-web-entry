@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "networks": {
+    "n": {
+      "p": "not a url"
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "brand": "Marrow Point Visitor Desk Assistant",
+  "networks": [
+    {
+      "name": "marrow_point_visitor_desk",
+      "front_man": "visitor_desk_assistant",
+      "hocon": "./marrow_point_visitor_desk.network.json",
+      "description": "A test site for the linking checks. For rooms at Tidewhistle Guesthouse, the assistant asks that site's own assistant, after you agree.",
+      "tags": [
+        "agentified-website"
+      ],
+      "sample_queries": [
+        "Can you ask Tidewhistle Guesthouse whether a step-free room is free for two from 12 to 14 June?",
+        "What can this desk help with?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.openai.com/v1",
+    "mock": false,
+    "byok_router": "https://api.openai.com/v1"
+  },
+  "allowed_peers": [
+    "http://127.0.0.1:8080"
+  ],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Calls only the partner sites in allowed_peers, after the visitor agrees."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "marrow_point_visitor_desk",
+    "front_man": "visitor_desk_assistant",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#1b5e73"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "marrow_point_visitor_desk",
+        "front_man": "visitor_desk_assistant",
+        "aliases": [
+          "marrow_point_visitor_desk",
+          "visitor_desk_assistant"
+        ],
+        "url": "marrow_point_visitor_desk"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_desk_state"
+    ]
+  }
+}

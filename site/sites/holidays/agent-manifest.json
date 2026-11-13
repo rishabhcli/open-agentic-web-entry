@@ -1,0 +1,43 @@
+{
+  "brand": "Holiday Desk",
+  "networks": [
+    {
+      "name": "holiday_desk",
+      "front_man": "holiday_desk",
+      "hocon": "./holiday_desk.network.json",
+      "description": "List public holidays per country for a date range (US federal and England/Wales).",
+      "tags": [
+        "agentified-website"
+      ],
+      "sample_queries": [
+        "US and GB holidays between 2026-11-16 and 2026-12-31"
+      ]
+    }
+  ],
+  "llm_router": {
+    "kind": "local-deterministic",
+    "mock": true,
+    "base_url": "https://api.openai.com/v1",
+    "byok_router": "https://api.openai.com/v1",
+    "note": "Default inference is a deterministic local router: no key or model needed. Visitors may bring their own OpenAI-compatible key."
+  },
+  "allowed_peers": [],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "This site calls no other sites."
+  },
+  "coded_tools": {
+    "module": "./coded-tools.js",
+    "sri": "sha256-V5xw4cYaSGScIYzuRDuLr8i+ocTBcxzY7YXPNvIH7iE="
+  },
+  "theme": {
+    "primary": "#0b5fff"
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "direct_byok": true,
+    "public_mcp_facade": false
+  }
+}
